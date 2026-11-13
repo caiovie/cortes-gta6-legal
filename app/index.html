@@ -119,7 +119,8 @@ const $ = (id) => document.getElementById(id);
 let creator = null, clip = null;
 
 async function api(path, opts) {
-  const r = await fetch(API + path, opts);
+  const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 60000);
+  const r = await fetch(API + path, { ...opts, signal: ctl.signal }).finally(() => clearTimeout(t));
   const j = await r.json();
   if (!r.ok) throw new Error(j.error || r.status);
   return j;
@@ -131,7 +132,7 @@ async function init() {
     if (!connected) { $('conn').textContent = 'Not connected'; $('btnLogin').hidden = false; return; }
     $('conn').textContent = 'Connected';
     await loadCreator();
-  } catch (e) { $('conn').textContent = 'Local server offline — start it with: node server.mjs'; }
+  } catch (e) { $('conn').textContent = 'Publisher service unavailable — allow local network access and reload.'; }
 }
 
 $('btnLogin').onclick = async () => {
