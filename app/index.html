@@ -130,7 +130,8 @@ async function init() {
   try {
     const { connected } = await api('/status');
     if (!connected) { $('conn').textContent = 'Not connected'; $('btnLogin').hidden = false; return; }
-    $('conn').textContent = 'Connected';
+    $('conn').textContent = 'Connected with TikTok';
+    $('btnLogin').hidden = false; $('btnLogin').textContent = 'Log in with another TikTok account'; $('btnLogin').className = 'sec';
     await loadCreator();
   } catch (e) { $('conn').textContent = 'Publisher service unavailable — allow local network access and reload.'; }
 }
