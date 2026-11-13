@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Cortes GTA 6 Publisher</title>
+<style>
+:root{--bg:#f6f6f8;--card:#fff;--fg:#161616;--muted:#5d5d66;--line:#e2e2e8;--accent:#fe2c55;--ok:#0a8f5a;--warn:#b25b00}
+@media (prefers-color-scheme:dark){:root{--bg:#111114;--card:#1b1b20;--fg:#f1f1f3;--muted:#a3a3ad;--line:#2c2c34}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,sans-serif}
+header{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line);background:var(--card)}
+header h1{font-size:17px;margin:0}
+header .sp{flex:1}
+main{max-width:980px;margin:0 auto;padding:20px 16px;display:grid;gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.card h2{font-size:15px;margin:0 0 12px}
+.row{display:flex;gap:16px;flex-wrap:wrap}
+.col{flex:1 1 300px;min-width:0}
+button{font:inherit;border:0;border-radius:8px;padding:10px 16px;cursor:pointer;background:var(--accent);color:#fff;font-weight:600}
+button.sec{background:transparent;color:var(--fg);border:1px solid var(--line)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.creator{display:flex;align-items:center;gap:12px}
+.creator img{width:48px;height:48px;border-radius:50%;object-fit:cover;background:var(--line)}
+.stats{display:flex;gap:18px;margin-top:10px;color:var(--muted);font-size:13px}
+.stats b{color:var(--fg);font-size:15px;display:block}
+label{display:block;font-weight:600;margin:12px 0 6px}
+select,textarea{width:100%;font:inherit;padding:9px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+textarea{min-height:110px;resize:vertical}
+.check{display:flex;align-items:center;gap:8px;font-weight:400;margin:6px 0}
+.check input{width:18px;height:18px}
+.check.dis{color:var(--muted)}
+.clips{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.clip{border:2px solid transparent;border-radius:10px;padding:0;background:none;color:var(--fg);text-align:left;font-weight:400}
+.clip video{width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:8px;display:block;background:#000}
+.clip span{font-size:12px;display:block;padding:4px 2px}
+.clip.sel{border-color:var(--accent)}
+.preview video{width:100%;max-width:300px;aspect-ratio:9/16;border-radius:10px;background:#000;display:block}
+.note{font-size:13px;color:var(--muted)}
+.toggle{display:flex;align-items:center;justify-content:space-between;margin-top:14px}
+.hint{font-size:13px;color:var(--warn);margin-top:6px}
+.status{padding:10px 12px;border-radius:8px;background:var(--bg);border:1px solid var(--line);font-size:14px}
+.status.ok{color:var(--ok)}
+.vids{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
+.vids a{color:var(--fg);font-size:12px;text-decoration:none}
+.vids img{width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:8px}
+footer{text-align:center;font-size:12px;color:var(--muted);padding:20px}
+footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Cortes GTA 6 — Publisher</h1><div class="sp"></div>
+  <span id="conn" class="note">Checking connection…</span>
+  <button id="btnLogin" hidden>Log in with TikTok</button>
+</header>
+<main>
+  <section class="card" id="cardCreator" hidden>
+    <h2>Posting to</h2>
+    <div class="creator"><img id="avatar" alt=""><div><div id="nick" style="font-weight:700"></div><div id="user" class="note"></div><div id="bio" class="note"></div></div></div>
+    <div class="stats">
+      <div><b id="sFollowers">–</b>Followers</div><div><b id="sFollowing">–</b>Following</div>
+      <div><b id="sLikes">–</b>Likes</div><div><b id="sVideos">–</b>Videos</div>
+    </div>
+  </section>
+
+  <section class="card" id="cardPost" hidden>
+    <h2>1. Choose a clip</h2>
+    <div class="clips" id="clips"></div>
+    <div class="row" style="margin-top:16px">
+      <div class="col preview"><h2>2. Preview</h2><video id="preview" controls playsinline></video><div id="durNote" class="note"></div></div>
+      <div class="col">
+        <h2>3. Post settings</h2>
+        <label for="caption">Title / caption</label>
+        <textarea id="caption" maxlength="2200"></textarea>
+        <label for="privacy">Who can view this video</label>
+        <select id="privacy"><option value="" selected disabled>Select privacy</option></select>
+        <label>Allow users to</label>
+        <div class="check" id="wComment"><input type="checkbox" id="cComment"><span>Comment</span></div>
+        <div class="check" id="wDuet"><input type="checkbox" id="cDuet"><span>Duet</span></div>
+        <div class="check" id="wStitch"><input type="checkbox" id="cStitch"><span>Stitch</span></div>
+        <div class="toggle"><strong>Disclose video content</strong><input type="checkbox" id="disclose" style="width:20px;height:20px"></div>
+        <div id="discloseBox" hidden>
+          <div class="note">Turn on to disclose that this video promotes goods or services in exchange for something of value.</div>
+          <div class="check"><input type="checkbox" id="yourBrand"><span>Your brand — you are promoting yourself or your own business.</span></div>
+          <div class="check" id="wBranded"><input type="checkbox" id="branded"><span>Branded content — you are promoting another brand or a third party.</span></div>
+          <div id="labelNote" class="hint" hidden></div>
+        </div>
+        <p class="note" id="consent"></p>
+        <button id="btnPost" disabled>Post to TikTok</button>
+        <div id="postHint" class="hint" hidden></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="cardStatus" hidden>
+    <h2>Post status</h2>
+    <div id="status" class="status"></div>
+    <p class="note">After you finish publishing, it may take a few minutes for your video to be processed and appear on your TikTok profile.</p>
+  </section>
+
+  <section class="card" id="cardVideos" hidden>
+    <h2>Your public videos on TikTok</h2>
+    <div class="vids" id="vids"></div>
+  </section>
+</main>
+<footer><a href="../termos.html">Terms of Service</a> · <a href="../privacidade.html">Privacy Policy</a></footer>
+<script>
+const API = 'http://localhost:8787/api';
+const MEDIA = new URL('../media/', location.href).href;
+const CLIPS = [
+  ['03-ps5-pro-nao-salva','PS5 Pro e GTA 6'],['05-marketing-da-rockstar','Marketing da Rockstar'],
+  ['01-30fps-ele-ja-sabia','GTA 6 a 30 FPS'],['02-gta6-no-xbox-one','GTA 6 no Xbox One'],['04-fisica-absurda','Física do GTA 6']];
+const PRIV = {PUBLIC_TO_EVERYONE:'Everyone',MUTUAL_FOLLOW_FRIENDS:'Friends',FOLLOWER_OF_CREATOR:'Followers',SELF_ONLY:'Only me'};
+const MUSIC = '<a href="https://www.tiktok.com/legal/page/global/music-usage-confirmation/en" target="_blank" rel="noopener">Music Usage Confirmation</a>';
+const BCP = '<a href="https://www.tiktok.com/legal/page/global/bc-policy/en" target="_blank" rel="noopener">Branded Content Policy</a>';
+const $ = (id) => document.getElementById(id);
+let creator = null, clip = null;
+
+async function api(path, opts) {
+  const r = await fetch(API + path, opts);
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.error || r.status);
+  return j;
+}
+
+async function init() {
+  try {
+    const { connected } = await api('/status');
+    if (!connected) { $('conn').textContent = 'Not connected'; $('btnLogin').hidden = false; return; }
+    $('conn').textContent = 'Connected';
+    await loadCreator();
+  } catch (e) { $('conn').textContent = 'Local server offline — start it with: node server.mjs'; }
+}
+
+$('btnLogin').onclick = async () => {
+  const { url } = await api('/connect', { method: 'POST' });
+  location.href = url;
+};
+
+async function loadCreator() {
+  creator = await api('/creator');
+  $('cardCreator').hidden = $('cardPost').hidden = $('cardVideos').hidden = false;
+  $('avatar').src = creator.creator_avatar_url;
+  $('nick').textContent = creator.creator_nickname;
+  $('user').textContent = '@' + creator.creator_username;
+  for (const o of creator.privacy_level_options) $('privacy').add(new Option(PRIV[o] || o, o));
+  for (const [k, w] of [['comment_disabled','wComment'],['duet_disabled','wDuet'],['stitch_disabled','wStitch']])
+    if (creator[k]) { $(w).classList.add('dis'); $(w).querySelector('input').disabled = true; $(w).title = 'Disabled in your TikTok settings'; }
+  renderClips(); update();
+  api('/stats').then(({ user }) => {
+    $('bio').textContent = user.bio_description || '';
+    $('sFollowers').textContent = user.follower_count; $('sFollowing').textContent = user.following_count;
+    $('sLikes').textContent = user.likes_count; $('sVideos').textContent = user.video_count;
+  }).catch(() => {});
+  loadVideos();
+}
+
+async function loadVideos() {
+  const { videos = [] } = await api('/videos').catch(() => ({}));
+  $('vids').innerHTML = videos.length ? '' : '<p class="note">No public videos yet.</p>';
+  for (const v of videos) {
+    const a = document.createElement('a'); a.href = v.share_url; a.target = '_blank';
+    a.innerHTML = `<img src="${v.cover_image_url}" alt=""><div>${(v.title || '').slice(0, 40)}</div>`;
+    $('vids').append(a);
+  }
+}
+
+function renderClips() {
+  for (const [id, name] of CLIPS) {
+    const b = document.createElement('button'); b.className = 'clip';
+    b.innerHTML = `<video src="${MEDIA}${id}.mp4#t=1.5" muted preload="metadata"></video><span>${name}</span>`;
+    b.onclick = () => { document.querySelectorAll('.clip').forEach((x) => x.classList.remove('sel')); b.classList.add('sel'); pick(id); };
+    $('clips').append(b);
+  }
+}
+
+function pick(id) {
+  clip = id; $('preview').src = MEDIA + id + '.mp4';
+  $('preview').onloadedmetadata = () => {
+    const d = $('preview').duration, max = creator.max_video_post_duration_sec;
+    $('durNote').textContent = d > max ? `This video is ${Math.round(d)}s; your account allows up to ${max}s.` : `Duration ${Math.round(d)}s (limit ${max}s).`;
+    update();
+  };
+  update();
+}
+
+function update() {
+  const disclose = $('disclose').checked, yb = $('yourBrand').checked, bc = $('branded').checked;
+  $('discloseBox').hidden = !disclose;
+  const onlyMe = [...$('privacy').options].find((o) => o.value === 'SELF_ONLY');
+  if (onlyMe) { onlyMe.disabled = disclose && bc; onlyMe.title = onlyMe.disabled ? 'Branded content visibility cannot be set to private' : ''; }
+  const privMe = $('privacy').value === 'SELF_ONLY';
+  $('branded').disabled = privMe; $('wBranded').title = privMe ? 'Visibility for branded content can\'t be private' : '';
+  if (privMe && bc) $('branded').checked = false;
+  const note = $('labelNote');
+  note.hidden = !(disclose && (yb || bc));
+  note.textContent = bc ? "Your photo/video will be labeled as 'Paid partnership'" : "Your photo/video will be labeled as 'Promotional content'";
+  $('consent').innerHTML = disclose && bc ? `By posting, you agree to TikTok's ${BCP} and ${MUSIC}` : `By posting, you agree to TikTok's ${MUSIC}`;
+  const tooLong = $('preview').duration > (creator?.max_video_post_duration_sec ?? Infinity);
+  const needDisclosure = disclose && !yb && !bc;
+  $('btnPost').disabled = !clip || !$('privacy').value || needDisclosure || tooLong;
+  $('btnPost').title = needDisclosure ? 'You need to indicate if your content promotes yourself, a third party, or both' : '';
+  $('postHint').hidden = !needDisclosure; $('postHint').textContent = $('btnPost').title;
+}
+['privacy','disclose','yourBrand','branded'].forEach((id) => $(id).addEventListener('change', update));
+
+$('btnPost').onclick = async () => {
+  $('btnPost').disabled = true;
+  $('cardStatus').hidden = false; $('status').className = 'status'; $('status').textContent = 'Sending your video to TikTok…';
+  try {
+    const r = await api('/publish', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+      video_url: MEDIA + clip + '.mp4', caption: $('caption').value, privacy_level: $('privacy').value,
+      disable_comment: !$('cComment').checked, disable_duet: !$('cDuet').checked, disable_stitch: !$('cStitch').checked,
+      brand_content_toggle: $('disclose').checked && $('branded').checked, brand_organic_toggle: $('disclose').checked && $('yourBrand').checked }) });
+    const id = r.publish_id || r.data?.publish_id;
+    if (!id) throw new Error(JSON.stringify(r).slice(0, 200));
+    poll(id, 0);
+  } catch (e) { $('status').textContent = 'Could not post: ' + e.message; update(); }
+};
+
+async function poll(id, n) {
+  try {
+    const s = await api('/publish-status?id=' + encodeURIComponent(id));
+    const st = s.status || 'UNKNOWN';
+    const label = { PROCESSING_DOWNLOAD:'TikTok is downloading your video…', PROCESSING_UPLOAD:'Uploading…', SEND_TO_USER_INBOX:'Sent to your TikTok inbox.', PUBLISH_COMPLETE:'Published! Your video is live on TikTok.', FAILED:'Failed: ' + (s.fail_reason || 'unknown') }[st] || st;
+    $('status').textContent = label;
+    if (st === 'PUBLISH_COMPLETE') { $('status').className = 'status ok'; loadVideos(); return; }
+    if (st === 'FAILED') return;
+  } catch (e) { $('status').textContent = 'Checking status… (' + e.message + ')'; }
+  if (n < 40) setTimeout(() => poll(id, n + 1), Math.min(3000 * 2 ** Math.min(n, 3), 20000));
+}
+init();
+</script>
+</body>
+</html>
